@@ -24,6 +24,7 @@ function create_config_link {
    fi
 }
 
+create_config_link "${HOME}/.Brewfile" "${REPO_PATH}/Brewfile"
 create_config_link "${HOME}/.bash_profile" "${REPO_PATH}/bash_profile"
 create_config_link "${HOME}/.bashrc" "${REPO_PATH}/bashrc"
 create_config_link "${HOME}/.gitconfig" "${REPO_PATH}/gitconfig"

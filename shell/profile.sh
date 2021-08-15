@@ -14,6 +14,10 @@ export LESS="-RinSFX"
 # Silence message saying zsh is the new default shell
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
+# Homebrew
+export HOMEBREW_BUNDLE_FILE="$HOME/.Brewfile"
+export HOMEBREW_NO_ANALYTICS=1
+
 # Aliases to configure default options
 alias grep="grep --color=auto"
 alias ls="ls --color=auto"
