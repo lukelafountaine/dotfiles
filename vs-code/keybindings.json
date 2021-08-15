@@ -1,0 +1,19 @@
+[
+   {
+      "key": "shift+cmd+j",
+      "command": "workbench.action.terminal.focus"
+   },
+   {
+      "key": "shift+cmd+\\",
+      "command": "workbench.action.splitEditor"
+   },
+   {
+      "key": "cmd+\\",
+      "command": "-workbench.action.splitEditor"
+   },
+   {
+      "key": "shift+cmd+j",
+      "command": "workbench.action.focusLastEditorGroup",
+      "when": "!editorTextFocus"
+   }
+]

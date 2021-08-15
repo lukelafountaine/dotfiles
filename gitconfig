@@ -1,0 +1,19 @@
+[user]
+   name = Luke LaFountaine
+   email = luke.lafountaine@gmail.com
+[push]
+   default = simple
+[alias]
+   # Delete all branches that have already been merged into master
+   cleanup = !git branch --merged | grep -v '\\*\\|master' | xargs git branch -d
+   st = status
+   plff = pull --ff-only
+   staged = diff --staged
+   amend = commit --amend
+   wip = commit --all -m 'WIP'
+   # Interactive rebase onto the first common ancestor of the current branch and
+   # origin/master
+   mr-rebase = !git rebase -i $(git merge-base origin/master HEAD)
+[core]
+   editor = vim
+   excludesfile = ~/.gitignore_global
