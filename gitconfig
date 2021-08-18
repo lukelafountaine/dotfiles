@@ -1,8 +1,11 @@
 [user]
    name = Luke LaFountaine
    email = luke.lafountaine@gmail.com
+   signingkey = 883EE129
 [push]
    default = simple
+[commit]
+   gpgsign = true
 [alias]
    # Delete all branches that have already been merged into master
    cleanup = !git branch --merged | grep -v '\\*\\|master' | xargs git branch -d
