@@ -1,1 +1,1 @@
-source ~/code/personal/dotfiles/shell/profile.sh
+source "$(dirname $(readlink ~/.bashrc))/shell/profile.sh"

@@ -1,3 +1,5 @@
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+
 # Bash history settings
 # https://twitter.com/gumnos/status/1117146713289121797?s=11
 export HISTCONTROL=ignorespace:erasedups
@@ -31,11 +33,9 @@ alias 3up="cd ../../.."
 alias 2up="cd ../.."
 
 # Directory-based aliases
-alias dotfiles="cd ~/code/personal/dotfiles"
+alias dotfiles="cd $(dirname ${SCRIPT_DIR})"
 
 # Load external helpers
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-
 source "${SCRIPT_DIR}/path.sh"
 source "${SCRIPT_DIR}/prompt.sh"
 source "${SCRIPT_DIR}/utilities.sh"
