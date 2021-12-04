@@ -3,6 +3,17 @@
 REPO_PATH=$(cd "$(dirname "$0")" && pwd)
 
 #################################################
+# Set Homebrew environment variables
+#################################################
+BREW_SETTINGS_PATH="${REPO_PATH}/shell/brew.sh"
+
+[ -f /opt/homebrew/bin/brew ] && BREW="/opt/homebrew/bin/brew" || BREW="/usr/local/bin/brew"
+if ! grep -q "shellenv" "${BREW_SETTINGS_PATH}"; then
+   echo "INFO: Setting Homebrew environment variables"
+   echo 'eval "$('${BREW}' shellenv)"' >> "${BREW_SETTINGS_PATH}"
+fi
+
+#################################################
 # Create symlinks for config
 #################################################
 

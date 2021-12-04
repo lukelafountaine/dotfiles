@@ -19,6 +19,10 @@ export BASH_SILENCE_DEPRECATION_WARNING=1
 # Homebrew
 export HOMEBREW_BUNDLE_FILE="$HOME/.Brewfile"
 export HOMEBREW_NO_ANALYTICS=1
+source "${SCRIPT_DIR}/brew.sh"
+
+# Load bash completion
+[[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]] && . "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
 
 # Aliases to configure default options
 alias grep="grep --color=auto"
@@ -41,6 +45,3 @@ source "${SCRIPT_DIR}/prompt.sh"
 source "${SCRIPT_DIR}/utilities.sh"
 source "${SCRIPT_DIR}/aws.sh"
 source "${SCRIPT_DIR}/nvm.sh"
-
-# Load bash completion
-[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
