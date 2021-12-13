@@ -25,6 +25,7 @@ source "${SCRIPT_DIR}/brew.sh"
 [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]] && . "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
 
 # Aliases to configure default options
+alias diff="colordiff"
 alias grep="grep --color=auto"
 alias ls="ls --color=auto"
 alias ag="ag --pager=less"
