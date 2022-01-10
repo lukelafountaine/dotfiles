@@ -1,0 +1,6 @@
+[toplevel]
+whoami =
+   !f() {
+      aws sts get-caller-identity
+      aws iam list-account-aliases --query AccountAliases --output text
+   }; f
