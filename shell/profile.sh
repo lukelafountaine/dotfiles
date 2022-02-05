@@ -8,6 +8,10 @@ export HISTSIZE=
 export HISTFILESIZE=
 shopt -s histappend # Append to the history file, don't overwrite it
 
+# Ensure that the terminal colors work when using vim within tmux. For more info, see:
+# https://github.com/Rigellute/shades-of-purple.vim#colours-dont-look-right
+export TERM="xterm-256color"
+
 # Environment
 export EDITOR=vim
 export PAGER=less
