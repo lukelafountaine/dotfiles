@@ -41,6 +41,12 @@ set autoindent
 set smartindent
 set ignorecase
 
+" Show invisible characters
+set list
+set listchars=
+set listchars+=space:·
+set listchars+=tab:»»
+
 " Show line numbers.
 set number
 
