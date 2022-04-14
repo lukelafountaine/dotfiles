@@ -23,6 +23,7 @@ brew 'tmux'
 brew 'vim'
 
 cask '1password'
+cask '1password-cli'
 cask 'docker'
 cask 'firefox'
 cask 'google-chrome'
