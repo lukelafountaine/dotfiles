@@ -19,6 +19,7 @@ brew 'neovim'
 brew 'parallel'
 brew 'parquet-tools'
 brew 'python'
+brew 'python-yq'
 brew 'tmux'
 brew 'vim'
 

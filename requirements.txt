@@ -1,3 +1,2 @@
-yq
 awsume
 awsume-console-plugin
