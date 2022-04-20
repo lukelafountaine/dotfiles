@@ -97,8 +97,8 @@ set updatetime=250
 
 " Create shortcuts for moving between buffers.
 nnoremap <silent> [b :bprevious<CR>
-nnoremap <silent> ]b :bprevious<CR>
+nnoremap <silent> ]b :bnext<CR>
 nnoremap <silent> [B :bprevious<CR>
-nnoremap <silent> ]B :bprevious<CR>
+nnoremap <silent> ]B :bnext<CR>
 
 source ~/.vim/plugins.vim
