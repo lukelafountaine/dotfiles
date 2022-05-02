@@ -9,6 +9,7 @@ endif
 call plug#begin()
 Plug 'kien/ctrlp.vim'
 Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-commentary'
 Plug 'lukelafountaine/shades-of-purple.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -41,6 +42,11 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nmap <silent> gn <Plug>(coc-rename)
 nnoremap <silent> gh :call <SID>show_documentation()<CR>
+inoremap <silent><expr> <NUL> coc#refresh()
+inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
+inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
 
 function! s:show_documentation()
    if (index(['vim','help'], &filetype) >= 0)
