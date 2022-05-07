@@ -18,6 +18,8 @@ set shortmess+=I
 " Use the system clipboard for the unnamed register.
 set clipboard=unnamed
 
+set history=200
+
 " Show trailing whitespace
 " - non-color terminals: reverse the text and background "colors"
 " - color terminals and GUI: set the background to red
