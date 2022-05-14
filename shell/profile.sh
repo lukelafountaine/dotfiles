@@ -25,6 +25,12 @@ export HOMEBREW_BUNDLE_FILE="$HOME/.Brewfile"
 export HOMEBREW_NO_ANALYTICS=1
 source "${SCRIPT_DIR}/brew.sh"
 
+# Fzf
+
+# Setting ag as the default source for fzf
+export FZF_DEFAULT_COMMAND='ag -g ""'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
 # Load bash completion
 [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]] && . "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
 
