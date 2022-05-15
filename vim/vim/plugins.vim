@@ -40,7 +40,7 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
-nmap <silent> gn <Plug>(coc-rename)
+nmap <silent> grn <Plug>(coc-rename)
 nnoremap <silent> gh :call <SID>show_documentation()<CR>
 inoremap <silent><expr> <NUL> coc#refresh()
 inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
