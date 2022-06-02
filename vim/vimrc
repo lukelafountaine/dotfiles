@@ -129,6 +129,13 @@ set mouse+=a
 " long if you want your plugins to feel responsive.
 set updatetime=250
 
+" Settings for git commit messages
+augroup commitMessages
+   autocmd!
+   autocmd FileType gitcommit set textwidth=90
+   autocmd FileType gitcommit set colorcolumn+=72
+augroup END
+
 " Easily jump to the beginning and the end of the line
 nnoremap H ^
 nnoremap L $
