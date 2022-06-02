@@ -5,6 +5,9 @@
 " is loaded some other way (e.g. saved as `foo`, and then Vim started with `vim -u foo`).
 set nocompatible
 
+" Set up plugins first so anything in this file will overwrite the stuff set by a plugin.
+source ~/.vim/plugins.vim
+
 " Turn on syntax highlighting.
 syntax on
 
@@ -125,4 +128,3 @@ nnoremap <silent> ]b :bnext<CR>
 nnoremap <silent> [B :bprevious<CR>
 nnoremap <silent> ]B :bnext<CR>
 
-source ~/.vim/plugins.vim
