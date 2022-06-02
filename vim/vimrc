@@ -107,6 +107,10 @@ set hlsearch
 nnoremap n nzzzv
 nnoremap N Nzzzv
 
+" Allow me to edit and reload my vimrc on demand
+nnoremap <leader>ev :split $MYVIMRC<cr>
+nnoremap <leader>sv :source $MYVIMRC<cr>
+
 " Unbind some useless/annoying default key bindings.
 nmap Q <Nop> " 'Q' in normal mode enters Ex mode. You almost never want this.
 
