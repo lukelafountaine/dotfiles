@@ -23,6 +23,9 @@ set clipboard=unnamed
 
 set history=200
 
+" Set my leader value
+let mapleader = "-"
+
 " Use ag as the default :grep program
 set grepprg=ag\ --vimgrep\ $*
 
