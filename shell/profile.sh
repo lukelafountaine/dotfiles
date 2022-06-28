@@ -47,6 +47,9 @@ alias 4up="cd ../../../.."
 alias 3up="cd ../../.."
 alias 2up="cd ../.."
 
+# Create a new tmux session using the current directory name as the session name
+alias nmux="tmux new -s \$(basename \$(pwd))"
+
 # Directory-based aliases
 alias dotfiles="cd $(dirname ${SCRIPT_DIR})"
 
