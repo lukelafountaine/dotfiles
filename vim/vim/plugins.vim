@@ -13,6 +13,7 @@ Plug 'tpope/vim-commentary'
 Plug 'lukelafountaine/shades-of-purple.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'lervag/wiki.vim'
 call plug#end()
 
 " Automatically install plugins if they aren't installed already.
@@ -22,6 +23,10 @@ autocmd VimEnter *
    \ | endif
 
 " Plugin settings
+let g:wiki_root = '~/notes'
+let g:wiki_filetypes = ['md']
+let g:wiki_link_extension = '.md'
+let g:wiki_link_target_type = 'md'
 
 " Git Gutter
 set signcolumn=yes
