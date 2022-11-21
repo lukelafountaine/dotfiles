@@ -3,8 +3,13 @@ export AWS_DEFAULT_REGION=us-east-1
 
 alias awsunset='unset $(env | grep AWS | grep -v AWS_REGION | grep -v AWS_DEFAULT_REGION | sed '"'"'s|=.*||'"'"')'
 
+function assume {
+   source assume $@
+   # Serverless (SLS) fails when AWS_PROFILE is set, so we unset it here
+   unset AWS_PROFILE
+}
+
 # For awsume (https://awsu.me)
-alias assume=". awsume"
 alias awsume=". awsume"
 
 _awsume() {

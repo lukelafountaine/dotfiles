@@ -10,6 +10,7 @@ brew 'fzf'
 brew 'gh'
 brew 'git'
 brew 'gnu-sed'
+brew 'granted'
 brew 'grep'
 brew 'gzip'
 brew 'hugo'
@@ -41,3 +42,5 @@ cask 'whatsapp'
 cask 'zoom'
 
 mas 'Bear', id: 1091189122
+
+tap 'common-fate/granted'
