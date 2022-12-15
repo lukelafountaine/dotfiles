@@ -1,3 +1,7 @@
+alias linesOnlyInFileOne='comm -23'
+alias linesOnlyInFileTwo='comm -13'
+alias linesInBothFiles='comm -12'
+
 silentPushd() {
    if [ -d "$1" ]; then
       pushd $1 2>&1 >> /dev/null
