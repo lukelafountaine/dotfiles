@@ -18,5 +18,5 @@
    # origin/master
    mr-rebase = !git rebase -i $(git merge-base origin/master HEAD)
 [core]
-   editor = vim
+   editor = hx
    excludesfile = ~/.gitignore_global

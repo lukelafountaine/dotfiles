@@ -1,0 +1,14 @@
+theme = "night_owl"
+
+[editor]
+rulers = [90,140]
+bufferline = "always"
+text-width = 90
+
+[editor.whitespace.render]
+space = "all"
+tab = "all"
+newline = "none"
+
+[keys.normal]
+X = "extend_line_above"
