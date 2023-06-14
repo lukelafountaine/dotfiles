@@ -39,6 +39,7 @@ alias diff="colordiff"
 alias grep="grep --color=auto"
 alias ls="ls --color=auto"
 alias ag="ag --pager=less"
+alias add="awk '{s+=\$1} END {print s}'"
 
 # General aliases
 alias c="clear"
