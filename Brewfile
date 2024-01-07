@@ -48,7 +48,6 @@ cask 'whatsapp'
 cask 'wireshark'
 cask 'zoom'
 
-mas 'Bear', id: 1091189122
 mas 'Tailscale', id: 1475387142
 
 tap 'common-fate/granted'
