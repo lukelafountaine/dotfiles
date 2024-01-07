@@ -2,3 +2,4 @@ shell/brew.sh
 vim/vim/autoload
 vim/vim/plugged
 vim/vim/.netrwhist
+helix/runtime/
