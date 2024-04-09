@@ -2,7 +2,7 @@
 name = "git-commit"
 scope = "git.commitmsg"
 roots = []
-file-types = ["COMMIT_EDITMSG"]
+file-types = [{ glob = "COMMIT_EDITMSG"}]
 comment-token = "#"
 indent = { tab-width = 3, unit = " " }
 rulers = [72, 90]
