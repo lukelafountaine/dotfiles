@@ -4,6 +4,9 @@ theme = "catppuccin_latte"
 rulers = [90,140]
 bufferline = "always"
 text-width = 90
+auto-pairs = false
+auto-format = false
+insert-final-newline = true
 
 [editor.whitespace.render]
 space = "all"
