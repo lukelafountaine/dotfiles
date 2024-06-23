@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "gray-matter": "4.0.3",
+    "js-yaml": "4.1.0",
+    "sqlite": "5.1.1",
+    "sqlite3": "5.1.7",
+    "uuid": "10.0.0"
+  }
+}
