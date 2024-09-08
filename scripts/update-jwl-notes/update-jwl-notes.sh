@@ -9,7 +9,7 @@ fi
 # Paths
 ZIP_FILE="$1"
 UNZIP_DIR="/tmp/unzipped_jwlibrary"
-NEW_ZIP_PATH="/tmp/UpdatedBackup.jwlibrary"
+NEW_ZIP_PATH="/tmp/UpdatedBackup-$(date +%s).jwlibrary"
 DB_PATH="$UNZIP_DIR/userData.db"
 
 # Create the unzip directory if it does not exist
@@ -27,7 +27,8 @@ fi
 
 # Step 3: Run the Node.js script to process the database
 echo "Processing the database with Node.js script..."
-node update-jwl-notes.js "$DB_PATH"
+node update-jwl-notes.js --path "$DB_PATH" --action clear
+node update-jwl-notes.js --path "$DB_PATH" --action import
 
 # Step 4: Create a new zip file with the modified SQLite database
 echo "Creating a new zip file with the modified database..."

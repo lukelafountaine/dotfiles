@@ -1,155 +1,258 @@
-const fs = require('fs');
-const path = require('path');
-const uuid = require('uuid');
-const sqlite = require('sqlite');
-const sqlite3 = require('sqlite3');
-const matter = require('gray-matter');
-const { execSync } = require('child_process');
+const fs = require('fs'),
+      path = require('path'),
+      uuid = require('uuid'),
+      sqlite = require('sqlite'),
+      sqlite3 = require('sqlite3'),
+      minimist = require('minimist'),
+      matter = require('gray-matter'),
+      { execSync } = require('child_process');
 
-const dbPath = process.argv[2];
+const ALLOWED_ACTIONS = [ 'import', 'export', 'clear' ],
+      argv = minimist(process.argv.slice(2), { string: [ 'action', 'path' ] })
 
-if (!dbPath) {
-    console.error("Usage: node process_notes.js <path_to_db>");
-    process.exit(1);
+if (!argv.path || !ALLOWED_ACTIONS.includes(argv.action)) {
+   console.info(`Please provide --path <PATH_TO_DB> and --action <${ALLOWED_ACTIONS.join('|')}>`)
+   process.exit(1);
 }
 
-// Verify the database file exists and is accessible
-if (!fs.existsSync(dbPath)) {
-    console.error(`Database file does not exist at path: ${dbPath}`);
-    process.exit(1);
-}
-
-// Function to format content using dprint
 function formatContent(content) {
-    return execSync('dprint fmt --stdin .md', { input: content }).toString();
+   return execSync('dprint fmt --stdin .md', { input: content }).toString().trim();
 }
 
-// Function to extract citations from markdown content
 function extractCitations(content) {
-    const regex = /\[\[_bible\/(\d+)\s([0-9 A-Za-z]+)\s(\d+)#?(\d*)\|?.*?\]\]/g;
-    let citations = [];
-    let match;
+   const regex = /\[\[(?:_bible\/)?(\d+)\s([0-9 A-Za-z]+)\s(\d+)#?(\d*)\|?.*?\]\]/g;
+   let citations = [];
+   let match;
 
-    while ((match = regex.exec(content)) !== null) {
-        const [_, bookNumber, bookName, chapterNumber, verseNumber] = match;
-        citations.push({
-            bookNumber: parseInt(bookNumber, 10),
-            chapterNumber: parseInt(chapterNumber, 10),
-            verseNumber: verseNumber ? parseInt(verseNumber, 10) : 1
-        });
-    }
+   while ((match = regex.exec(content)) !== null) {
+      const [_, bookNumber, bookName, chapterNumber, verseNumber] = match;
+      citations.push({
+         bookNumber: parseInt(bookNumber, 10),
+         chapterNumber: parseInt(chapterNumber, 10),
+         verseNumber: verseNumber ? parseInt(verseNumber, 10) : 1
+      });
+   }
 
-    return citations;
+   return citations;
 }
 
-// Function to extract title from markdown content
 function extractTitle(content) {
-    const parsed = matter(content);
-    if (parsed.data.title) {
-        return parsed.data.title;
-    }
+   const parsed = matter(content);
+   if (parsed.data.title) {
+      return parsed.data.title;
+   }
 
-    const titleMatch = content.match(/^#\s+(.+)/m);
-    return titleMatch ? titleMatch[1] : '';
+   const titleMatch = content.match(/^#\s+(.+)/m);
+   return titleMatch ? titleMatch[1] : '';
 }
 
-// Function to remove the title from the content
 function removeTitleFromContent(content, title) {
-    const titleRegex = new RegExp(`^#\\s+${title.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}`, 'm');
-    return content.replace(titleRegex, '').trim();
+   const titleRegex = new RegExp(`^#\\s+${title.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}`, 'm');
+   return content.replace(titleRegex, '').trim();
 }
 
-// Function to replace wiki links with display text
 function replaceWikiLinks(content) {
-    const wikiLinkRegex = /\[\[.*\|(.*)\]\]/g;
-    return content.replace(wikiLinkRegex, '$1');
+   const wikiLinkRegex = /\[\[.*\|(.*)\]\]/g;
+   return content.replace(wikiLinkRegex, '$1');
 }
 
-// Function to remove front matter from the content
 function removeFrontMatter(content) {
-    const parsed = matter(content);
-    return parsed.content;
+   const parsed = matter(content);
+   return parsed.content;
 }
 
-// Function to process markdown file
 async function processMarkdownFile(db, filePath) {
-    let content = fs.readFileSync(filePath, 'utf8');
+   let content = fs.readFileSync(filePath, 'utf8');
 
-    // Extract citations
-    const citations = extractCitations(content);
+   const citations = extractCitations(content);
 
-    if (!citations.length) {
-        return;
-    }
+   if (!citations.length) {
+      return;
+   }
 
-    // Extract title
-    const title = extractTitle(content);
+   const title = extractTitle(content);
 
-    // Remove the title from the content
-    content = removeTitleFromContent(content, title);
+   content = removeTitleFromContent(content, title);
+   content = replaceWikiLinks(content);
+   content = removeFrontMatter(content);
+   content = formatContent(content);
 
-    // Replace wiki links with display text
-    content = replaceWikiLinks(content);
+   for (const citation of citations) {
+      const { bookNumber, chapterNumber, verseNumber } = citation,
+            noteGuid = uuid.v4(),
+            blockIdentifier = verseNumber || 1;
 
-    // Remove front matter
-    content = removeFrontMatter(content);
+      const existingLocation = await db.get(
+         `
+            SELECT LocationID
+               FROM Location
+            WHERE BookNumber = ?
+               AND ChapterNumber = ?
+               AND KeySymbol = ?
+               AND MEPSLanguage = ?
+               AND Type = ?
+         `,
+         [ Number(bookNumber), Number(chapterNumber), 'nwtsty', 0, 0 ]);
 
-    // Format content using dprint
-    content = formatContent(content);
+      let locationID = existingLocation?.LocationId;
 
-    for (const citation of citations) {
-        console.log(`Inserting note at ${JSON.stringify(citation)} for ${filePath}`);
+      if (!locationID) {
+         const location = await db.run(
+            `INSERT INTO Location (BookNumber, ChapterNumber, KeySymbol, MEPSLanguage, Type)
+               VALUES (?, ?, ?, ?, ?)`,
+            Number(bookNumber), Number(chapterNumber), 'nwtsty', 0, 0
+         );
 
-        const { bookNumber, chapterNumber, verseNumber } = citation;
-        const noteGuid = uuid.v4();
+         locationID = location.lastID;
+      }
 
-        // Use 1 as the fallback value for blockIdentifier
-        const blockIdentifier = verseNumber || 1;
-
-        // Insert the location into the database
-        const { lastID: locationID } = await db.run(
-            `INSERT INTO Location (BookNumber, ChapterNumber, KeySymbol, Type) 
-            VALUES (?, ?, ?, ?)`,
-            Number(bookNumber), Number(chapterNumber), 'nwtsty', 0
-        );
-
-        // Insert the note into the database
-        await db.run(
-            `INSERT INTO Note (Guid, Title, Content, LastModified, Created, LocationId, BlockIdentifier, BlockType) 
+      // Insert the note into the database
+      await db.run(
+         `INSERT INTO Note (Guid, Title, Content, LastModified, Created, LocationId, BlockIdentifier, BlockType)
             VALUES (?, ?, ?, datetime('now'), datetime('now'), ?, ?, 2)`,
-            noteGuid, title, content, locationID, blockIdentifier
-        );
-
-    }
+         noteGuid, title, content, locationID, blockIdentifier
+      );
+   }
 }
 
 // Function to clear existing notes from the database
 async function clearNotes(db) {
-    await db.run(
-        `DELETE FROM Note WHERE LocationId IN (SELECT LocationId FROM Location WHERE KeySymbol IN ('Rbi8', 'nwt', 'nwtsty'))`
-    );
+   await db.run(
+      `DELETE FROM Note WHERE LocationId IN (SELECT LocationId FROM Location WHERE KeySymbol IN ('Rbi8', 'nwt', 'nwtsty'))`
+   );
 }
 
-// Process each markdown file
-async function processMarkdownFiles(db) {
-    const notesDir = path.join(process.env.HOME, 'notes', 'notes');
-    const files = fs.readdirSync(notesDir).filter(file => file.endsWith('.md'));
+const BIBLE_BOOK_MAPPING = {
+   1: 'Genesis',
+   2: 'Exodus',
+   3: 'Leviticus',
+   4: 'Numbers',
+   5: 'Deuteronomy',
+   6: 'Joshua',
+   7: 'Judges',
+   8: 'Ruth',
+   9: '1 Samuel',
+   10: '2 Samuel',
+   11: '1 Kings',
+   12: '2 Kings',
+   13: '1 Chronicles',
+   14: '2 Chronicles',
+   15: 'Ezra',
+   16: 'Nehemiah',
+   17: 'Esther',
+   18: 'Job',
+   19: 'Psalms',
+   20: 'Proverbs',
+   21: 'Ecclesiastes',
+   22: 'Song of Solomon',
+   23: 'Isaiah',
+   24: 'Jeremiah',
+   25: 'Lamentations',
+   26: 'Ezekiel',
+   27: 'Daniel',
+   28: 'Hosea',
+   29: 'Joel',
+   30: 'Amos',
+   31: 'Obadiah',
+   32: 'Jonah',
+   33: 'Micah',
+   34: 'Nahum',
+   35: 'Habakkuk',
+   36: 'Zephaniah',
+   37: 'Haggai',
+   38: 'Zechariah',
+   39: 'Malachi',
+   40: 'Matthew',
+   41: 'Mark',
+   42: 'Luke',
+   43: 'John',
+   44: 'Acts',
+   45: 'Romans',
+   46: '1 Corinthians',
+   47: '2 Corinthians',
+   48: 'Galatians',
+   49: 'Ephesians',
+   50: 'Philippians',
+   51: 'Colossians',
+   52: '1 Thessalonians',
+   53: '2 Thessalonians',
+   54: '1 Timothy',
+   55: '2 Timothy',
+   56: 'Titus',
+   57: 'Philemon',
+   58: 'Hebrews',
+   59: 'James',
+   60: '1 Peter',
+   61: '2 Peter',
+   62: '1 John',
+   63: '2 John',
+   64: '3 John',
+   65: 'Jude',
+   66: 'Revelation'
+}
 
-    for (const file of files) {
-        const filePath = path.join(notesDir, file);
-        if (filePath) {
-            await processMarkdownFile(db, filePath);
-        }
-    }
+async function getBibleNotesFromDB(db) {
+   const notes = await db.all(`
+      SELECT
+       BookNumber,
+       ChapterNumber,
+       Note.BlockIdentifier,
+       Note.Title,
+       Content,
+       GROUP_CONCAT(Tag.Name, ', ') AS tag_titles
+      FROM
+       Note
+      JOIN
+       Location ON Note.LocationId = Location.LocationId
+      LEFT JOIN
+       TagMap ON Note.NoteId = TagMap.NoteId
+      LEFT JOIN
+       Tag ON TagMap.TagId = Tag.TagId
+      WHERE
+       LOWER(Location.KeySymbol) IN ('rbi8', 'nwt', 'nwtsty')
+      GROUP BY
+       Note.NoteId
+      ORDER BY BookNumber ASC, ChapterNumber ASC, Note.BlockIdentifier ASC
+   `);
+
+   return notes.map((note) => {
+      return {
+         citation: `${BIBLE_BOOK_MAPPING[note.BookNumber]} ${note.ChapterNumber}:${note.BlockIdentifier}`,
+         title: note.Title ? note.Title : undefined,
+         content: note.Content ? note.Content : undefined,
+         tags: note.tag_titles ? note.tag_titles.split(', ') : undefined,
+      };
+   });
+}
+
+async function processMarkdownFiles(db) {
+   const notesDir = path.join(process.env.HOME, 'notes', 'notes'),
+         files = fs.readdirSync(notesDir).filter(file => file.endsWith('.md'));
+
+   for (const file of files) {
+      const filePath = path.join(notesDir, file);
+
+      if (filePath) {
+         await processMarkdownFile(db, filePath);
+      }
+   }
 }
 
 (async () => {
-    try {
-        const db = await sqlite.open({ filename: dbPath, driver: sqlite3.Database });
-        await clearNotes(db);
-        await processMarkdownFiles(db);
-        await db.close();
-    } catch (error) {
-        console.error('Error processing files:', error);
-    }
+   try {
+      const db = await sqlite.open({ filename: argv.path, driver: sqlite3.Database }),
+            action = argv.action.toLowerCase();
+
+      if (action === 'clear') {
+         await clearNotes(db);
+      } else if (action === 'import') {
+         await processMarkdownFiles(db);
+      } else if (action === 'export') {
+         console.log(JSON.stringify(await getBibleNotesFromDB(db), null, 3));
+      }
+
+      await db.close();
+   } catch (error) {
+      console.error('Error processing files:', error);
+   }
 })();
