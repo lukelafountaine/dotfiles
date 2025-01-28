@@ -1,11 +1,15 @@
 [user]
    name = Luke LaFountaine
    email = luke.lafountaine@gmail.com
-   signingkey = 883EE129
+   signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMGnMfxUAmKCOM0xpfykMIWHQIl72ofKIHirza8bCIz1
 [push]
    default = simple
 [commit]
    gpgsign = true
+[gpg]
+   format = ssh
+[gpg "ssh"]
+  program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
 [alias]
    # Delete all branches that have already been merged into master
    cleanup = !git branch --merged | grep -v '\\*\\|master' | xargs git branch -d
