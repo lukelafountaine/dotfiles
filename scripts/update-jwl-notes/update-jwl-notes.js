@@ -1,4 +1,4 @@
-const fs = require('fs'),
+const fs = require('fs/promises'),
       path = require('path'),
       uuid = require('uuid'),
       sqlite = require('sqlite'),
@@ -62,7 +62,8 @@ function removeFrontMatter(content) {
 }
 
 async function processMarkdownFile(db, filePath) {
-   let content = fs.readFileSync(filePath, 'utf8');
+   let content = await fs.readFile(filePath, 'utf8'),
+       { ctime, mtime } = await fs.stat(filePath);
 
    const citations = extractCitations(content);
 
@@ -109,8 +110,8 @@ async function processMarkdownFile(db, filePath) {
       // Insert the note into the database
       await db.run(
          `INSERT INTO Note (Guid, Title, Content, LastModified, Created, LocationId, BlockIdentifier, BlockType)
-            VALUES (?, ?, ?, datetime('now'), datetime('now'), ?, ?, 2)`,
-         noteGuid, title, content, locationID, blockIdentifier
+            VALUES (?, ?, ?, ?, ?, ?, ?, 2)`,
+         noteGuid, title, content, mtime.toISOString(), ctime.toISOString(), locationID, blockIdentifier
       );
    }
 }
@@ -227,7 +228,7 @@ async function getBibleNotesFromDB(db) {
 
 async function processMarkdownFiles(db) {
    const notesDir = path.join(process.env.HOME, 'notes', 'notes'),
-         files = fs.readdirSync(notesDir).filter(file => file.endsWith('.md'));
+         files = (await fs.readdir(notesDir)).filter(file => file.endsWith('.md'));
 
    for (const file of files) {
       const filePath = path.join(notesDir, file);
