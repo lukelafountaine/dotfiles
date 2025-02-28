@@ -35,16 +35,17 @@ function create_config_link {
    fi
 }
 
+create_config_link "${HOME}/.Brewfile" "${REPO_PATH}/Brewfile"
 create_config_link "${HOME}/.aws/cli/alias" "${REPO_PATH}/aws_aliases"
 create_config_link "${HOME}/.awsume/config.yaml" "${REPO_PATH}/awsume_config"
-create_config_link "${HOME}/.Brewfile" "${REPO_PATH}/Brewfile"
 create_config_link "${HOME}/.bash_profile" "${REPO_PATH}/bash_profile"
 create_config_link "${HOME}/.bashrc" "${REPO_PATH}/bashrc"
+create_config_link "${HOME}/.config/1Password" "${REPO_PATH}/1password"
 create_config_link "${HOME}/.config/helix" "${REPO_PATH}/helix"
-create_config_link "${HOME}/.config/kitty" "${REPO_PATH}/kitty"
 create_config_link "${HOME}/.config/karabiner/karabiner.json" "${REPO_PATH}/karabiner.json"
-create_config_link "${HOME}/.duckdbrc" "${REPO_PATH}/duckdbrc"
+create_config_link "${HOME}/.config/kitty" "${REPO_PATH}/kitty"
 create_config_link "${HOME}/.dprint.json" "${REPO_PATH}/dprint.json"
+create_config_link "${HOME}/.duckdbrc" "${REPO_PATH}/duckdbrc"
 create_config_link "${HOME}/.gitconfig" "${REPO_PATH}/gitconfig"
 create_config_link "${HOME}/.gitignore_global" "${REPO_PATH}/gitignore_global"
 create_config_link "${HOME}/.inputrc" "${REPO_PATH}/inputrc"
