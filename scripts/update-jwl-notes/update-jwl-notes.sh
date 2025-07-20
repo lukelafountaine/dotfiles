@@ -34,5 +34,4 @@ node update-jwl-notes.js --path "$DB_PATH" --action import
 echo "Creating a new zip file with the modified database..."
 cd "$UNZIP_DIR" || exit
 zip -r "$NEW_ZIP_PATH" .
-
-echo "Database updated and new zip file created at $NEW_ZIP_PATH"
+open "$NEW_ZIP_PATH"
