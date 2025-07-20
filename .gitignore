@@ -1,2 +1,7 @@
 node_modules
 helix/runtime
+claude/todos
+claude/projects
+claude/statsig
+claude/shell-snapshots
+claude/settings.local.json
