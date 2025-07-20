@@ -111,7 +111,7 @@ async function processMarkdownFile(db, filePath) {
       await db.run(
          `INSERT INTO Note (Guid, Title, Content, LastModified, Created, LocationId, BlockIdentifier, BlockType)
             VALUES (?, ?, ?, ?, ?, ?, ?, 2)`,
-         noteGuid, title, content, mtime.toISOString(), ctime.toISOString(), locationID, blockIdentifier
+         noteGuid, title, content, ctime.toISOString(), ctime.toISOString(), locationID, blockIdentifier
       );
    }
 }
