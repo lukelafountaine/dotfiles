@@ -5,3 +5,5 @@ claude/projects
 claude/statsig
 claude/shell-snapshots
 claude/settings.local.json
+vim/vim/plugged
+vim/vim/autoload
