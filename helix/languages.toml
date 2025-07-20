@@ -19,7 +19,6 @@ indent = { tab-width = 3, unit = "   " }
 
 [[language]]
 name = "typescript"
-scope = "source.ts"
 injection-regex = "(ts|typescript)"
 file-types = ["ts", "mts", "cts"]
 language-id = "typescript"
